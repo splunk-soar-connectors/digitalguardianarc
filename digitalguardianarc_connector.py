@@ -891,7 +891,7 @@ class DigitalGuardianArcConnector(BaseConnector):
                     self._api_key = response_json['access_token']
                     self._client_headers.update({'Authorization': 'Bearer {}'.format(self._api_key)})
                     self._client_headers['Authorization'] = 'Bearer {}'.format(self._api_key)
-                    self.save_progress('Got API Token ' + str(self._client_headers['Authorization']))
+                    self.save_progress('Got API Token')
                     return (phantom.APP_SUCCESS, None)
                 else:
                     return (phantom.APP_ERROR, self._handle_py_ver_compat_for_input_str(api_key_response.text))
