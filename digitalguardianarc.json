@@ -52,6 +52,13 @@
             "data_type": "string",
             "required": true,
             "order": 4
+        },
+        "verify_server_cert": {
+            "description": "Verify TLS certificates presented by Digital Guardian ARC and the local SOAR server",
+            "data_type": "boolean",
+            "default": true,
+            "required": false,
+            "order": 5
         }
     },
     "actions": [

@@ -34,6 +34,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         self._export_profile = None
         self._api_key = None
         self._client_headers = {}
+        self._verify = True
 
     def _process_empty_response(self, response, action_result):
         if response.status_code == 200:
@@ -122,8 +123,6 @@ class DigitalGuardianArcConnector(BaseConnector):
 
         # **kwargs can be any additional parameters that requests.request accepts
 
-        config = self.get_config()
-
         resp_json = None
 
         try:
@@ -137,7 +136,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         try:
             self.save_progress("Connecting to URL: {0}".format(url))
             r = request_func(url,
-                             verify=config.get('verify_server_cert', False),
+                             verify=self._verify,
                              **kwargs)
         except Exception as e:
             err = self._get_error_message_from_exception(e)
@@ -264,7 +263,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         try:
             request_response = requests.post(url=full_url,
                                             headers=self._client_headers,
-                                            verify=False)
+                                            verify=self._verify)
         except Exception as e:
             err = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err)), None)
@@ -527,7 +526,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         try:
             r = requests.get(url=full_url,
                              headers=self._client_headers,
-                             verify=False)
+                             verify=self._verify)
         except Exception as e:
             err = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err)), None)
@@ -554,7 +553,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         try:
             r = requests.get(url='{0}{1}/values?limit=100000'.format(full_url, watch_list_id),
                             headers=self._client_headers,
-                            verify=False)
+                            verify=self._verify)
         except Exception as e:
             err = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err)), None)
@@ -584,7 +583,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         try:
             r = requests.get(url=full_url,
                             headers=self._client_headers,
-                            verify=False)
+                            verify=self._verify)
         except Exception as e:
             err = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err)), None)
@@ -623,7 +622,7 @@ class DigitalGuardianArcConnector(BaseConnector):
                 r = requests.post(url='{0}{1}/values/'.format(full_url, watch_list_id),
                                 data=watch_list_entry_json,
                                 headers=self._client_headers,
-                                verify=False)
+                                verify=self._verify)
             except Exception as e:
                 err = self._get_error_message_from_exception(e)
                 return action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err))
@@ -653,7 +652,7 @@ class DigitalGuardianArcConnector(BaseConnector):
                 try:
                     r = requests.delete(url='{0}{1}/values/{2}'.format(full_url, watch_list_id, watch_list_value_id),
                                         headers=self._client_headers,
-                                        verify=False)
+                                        verify=self._verify)
                 except Exception as e:
                     err = self._get_error_message_from_exception(e)
                     return action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err))
@@ -705,7 +704,7 @@ class DigitalGuardianArcConnector(BaseConnector):
                 r = requests.put(url='{0}{1}/append'.format(full_url, list_id),
                                 headers=self._client_headers,
                                 data=component_list_entry_json,
-                                verify=False)
+                                verify=self._verify)
             except Exception as e:
                 err = self._get_error_message_from_exception(e)
                 return action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err))
@@ -734,7 +733,7 @@ class DigitalGuardianArcConnector(BaseConnector):
                 r = requests.post(url='{0}{1}/delete'.format(full_url, list_id),
                                 headers=self._client_headers,
                                 data=component_list_entry_json,
-                                verify=False)
+                                verify=self._verify)
             except Exception as e:
                 err = self._get_error_message_from_exception(e)
                 return action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err))
@@ -760,7 +759,7 @@ class DigitalGuardianArcConnector(BaseConnector):
             try:
                 r = requests.get(url='{0}{1}/values?limit=100000'.format(full_url, list_id),
                                 headers=self._client_headers,
-                                verify=False)
+                                verify=self._verify)
             except Exception as e:
                 err = self._get_error_message_from_exception(e)
                 return action_result.set_status(phantom.APP_ERROR, 'Error connecting to server. {0}'.format(err))
@@ -823,6 +822,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         self._client_id = self._handle_py_ver_compat_for_input_str(config['client_id'])
         self._client_secret = config['client_secret']
         self._export_profile = self._handle_py_ver_compat_for_input_str(config['export_profile'])
+        self._verify = config.get('verify_server_cert', True)
         self._client_headers = DG_CLIENT_HEADER
 
         return phantom.APP_SUCCESS
@@ -850,7 +850,7 @@ class DigitalGuardianArcConnector(BaseConnector):
             api_key_response = requests.post(url='{}/as/introspect.oauth2'.format(self._auth_url.strip("/")),
                                             headers=DG_HEADER_URL,
                                             data=payload,
-                                            verify=False)
+                                            verify=self._verify)
             response_json = api_key_response.json()
         except Exception as e:
             err = self._get_error_message_from_exception(e)
@@ -874,7 +874,7 @@ class DigitalGuardianArcConnector(BaseConnector):
                 api_key_response = requests.post(url=url,
                                                 headers=DG_HEADER_URL,
                                                 data=payload,
-                                                verify=False)
+                                                verify=self._verify)
             except requests.exceptions.InvalidSchema:
                 error_message = 'Error connecting to server. No connection adapters were found for %s' % (url)
                 return (phantom.APP_ERROR, error_message)
@@ -934,7 +934,7 @@ if __name__ == '__main__':
             login_url = DigitalGuardianArcConnector._get_phantom_base_url() + '/login'
 
             print('Accessing the Login page')
-            r = requests.get(login_url, verify=False)
+            r = requests.get(login_url, verify=self._verify)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -948,7 +948,7 @@ if __name__ == '__main__':
 
             print('Logging into Platform to get the session id')
             r2 = requests.post(login_url,
-                               verify=False,
+                               verify=self._verify,
                                data=data,
                                headers=headers)
             session_id = r2.cookies['sessionid']
