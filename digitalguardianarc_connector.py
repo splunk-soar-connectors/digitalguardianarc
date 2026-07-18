@@ -617,7 +617,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
         if watch_list_id:
-            watch_list_entry_json = '[{"value_name":"%s"}]' % watchlist_entry
+            watch_list_entry_json = json.dumps([{'value_name': watchlist_entry}])
             full_url = '{0}/watchlists/'.format(self._arc_url.strip("/"))
             try:
                 r = requests.post(url='{0}{1}/values/'.format(full_url, watch_list_id),
@@ -699,7 +699,7 @@ class DigitalGuardianArcConnector(BaseConnector):
             return action_result.get_status()
         self._client_headers["Content-Type"] = "application/json"
         if list_id:
-            component_list_entry_json = '{"items":["%s"]}' % componentlist_entry
+            component_list_entry_json = json.dumps({'items': [componentlist_entry]})
             full_url = '{0}/remediation/lists/'.format(self._arc_url.strip("/"))
             try:
                 r = requests.put(url='{0}{1}/append'.format(full_url, list_id),
@@ -728,7 +728,7 @@ class DigitalGuardianArcConnector(BaseConnector):
             return action_result.get_status()
         self._client_headers["Content-Type"] = "application/json"
         if list_id:
-            component_list_entry_json = '{"items":["%s"]}' % componentlist_entry
+            component_list_entry_json = json.dumps({'items': [componentlist_entry]})
             full_url = '{0}/remediation/lists/'.format(self._arc_url.strip("/"))
             try:
                 r = requests.post(url='{0}{1}/delete'.format(full_url, list_id),
