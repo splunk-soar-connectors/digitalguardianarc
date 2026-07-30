@@ -888,6 +888,8 @@ if __name__ == "__main__":
 
     username = args.username
     password = args.password
+    connector = DigitalGuardianArcConnector()
+    connector.print_progress_message = True
 
     if username is not None and password is None:
         # User specified a username but not a password, so ask
@@ -901,7 +903,7 @@ if __name__ == "__main__":
             login_url = DigitalGuardianArcConnector._get_phantom_base_url() + "/login"
 
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=self._verify)
+            r = requests.get(login_url, verify=connector._verify)
             csrftoken = r.cookies["csrftoken"]
 
             data = dict()
@@ -914,7 +916,7 @@ if __name__ == "__main__":
             headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=self._verify, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=connector._verify, data=data, headers=headers)
             session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
@@ -924,10 +926,6 @@ if __name__ == "__main__":
         in_json = f.read()
         in_json = json.loads(in_json)
         print(json.dumps(in_json, indent=4))
-
-        connector = DigitalGuardianArcConnector()
-        connector.print_progress_message = True
-
         if session_id is not None:
             in_json["user_session_token"] = session_id
             connector._set_csrf_info(csrftoken, headers["Referer"])
