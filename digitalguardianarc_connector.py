@@ -219,7 +219,7 @@ class DigitalGuardianArcConnector(BaseConnector):
         # The status and progress messages are more important.
 
         self.save_progress("Connecting to DG ARC")
-        ret_val, message = self.requestApiToken()
+        _ret_val, _message = self.requestApiToken()
         if not self._client_headers["Authorization"]:
             self.save_progress("Test Connectivity Failed")
             return action_result.get_status()
