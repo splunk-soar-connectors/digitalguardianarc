@@ -1,7 +1,7 @@
 # Digital Guardian ARC
 
 Publisher: Digital Guardian <br>
-Connector Version: 2.0.0 <br>
+Connector Version: 3.0.0 <br>
 Product Vendor: Digital Guardian <br>
 Product Name: Digital Guardian <br>
 Minimum Product Version: 4.9.39220
