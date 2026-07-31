@@ -12,10 +12,10 @@
             "name": "Chris King"
         }
     ],
-    "python_version": "3",
+    "python_version": "3.9, 3.13",
     "product_version_regex": ".*",
     "publisher": "Digital Guardian",
-    "license": "Copyright (c) Digital Guardian, 2020-2021",
+    "license": "Copyright (c) Digital Guardian, 2020-2026",
     "app_version": "2.0.0",
     "utctime_updated": "2021-04-29T06:15:01.000000Z",
     "package_name": "phantom_digitalguardianarc",
@@ -52,6 +52,13 @@
             "data_type": "string",
             "required": true,
             "order": 4
+        },
+        "verify_server_cert": {
+            "description": "Verify TLS certificates presented by Digital Guardian ARC and the local SOAR server",
+            "data_type": "boolean",
+            "default": true,
+            "required": false,
+            "order": 5
         }
     },
     "actions": [
