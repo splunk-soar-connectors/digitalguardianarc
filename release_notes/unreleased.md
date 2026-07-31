@@ -1,5 +1,1 @@
 **Unreleased**
-
-* Removed the OAuth bearer token from user-visible progress messages
-* Prevented watchlist and component-list values from injecting JSON request fields
-* Enabled TLS certificate verification by default for ARC and SOAR requests
